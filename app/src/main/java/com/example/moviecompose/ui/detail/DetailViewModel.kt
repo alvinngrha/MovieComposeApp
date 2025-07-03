@@ -1,51 +1,48 @@
 package com.example.moviecompose.ui.detail
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.moviecompose.data.repository.MovieRepository
+import com.example.moviecompose.data.response.DetailMovieResponse
+import com.example.moviecompose.data.response.MovieVideoResponse
+import com.example.moviecompose.ui.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+data class DetailWithVideos(
+    val detail: DetailMovieResponse,
+    val videos: MovieVideoResponse
+)
+
 class DetailViewModel(
     private val repository: MovieRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
-    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
+    private val _detailUiState = MutableStateFlow<UiState<DetailWithVideos>>(UiState.Loading)
+    val detailUiState: StateFlow<UiState<DetailWithVideos>> = _detailUiState.asStateFlow()
 
     fun fetchDetail(movieId: Int) {
-        _uiState.value = DetailUiState.Loading
+        _detailUiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getMovieDetail(movieId)
-                if (response.isSuccessful) {
-                    val detail = response.body()
-                    if (detail != null) {
-                        _uiState.value = DetailUiState.Success(detail)
+                val detailResponse = repository.getMovieDetail(movieId)
+                val videosResponse = repository.getMovieVideos(movieId)
+                if (detailResponse.isSuccessful && videosResponse.isSuccessful) {
+                    val detail = detailResponse.body()
+                    val videos = videosResponse.body()
+                    if (detail != null && videos != null) {
+                        _detailUiState.value = UiState.Success(DetailWithVideos(detail, videos))
                     } else {
-                        _uiState.value = DetailUiState.Error("No data found")
+                        _detailUiState.value = UiState.Error("No data found")
                     }
                 } else {
-                    _uiState.value = DetailUiState.Error("Error: ${response.code()}")
+                    _detailUiState.value = UiState.Error("Error: ${detailResponse.code()} / ${videosResponse.code()}")
                 }
             } catch (e: Exception) {
-                _uiState.value = DetailUiState.Error(e.message ?: "Unknown error")
+                _detailUiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
-    }
-}
-
-class DetailViewModelFactory(
-    private val repository: MovieRepository
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return DetailViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

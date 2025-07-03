@@ -34,6 +34,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.moviecompose.data.repository.MovieRepository
 import com.example.moviecompose.data.response.ResultsItem
 import com.example.moviecompose.helper.ViewModelFactory
+import com.example.moviecompose.ui.UiState
 
 private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
@@ -49,7 +50,7 @@ fun HomeScreen(
     val uiState by viewModel.homeUiState.collectAsState()
 
     when (uiState) {
-        is HomeUiState.Loading -> {
+        is UiState.Loading -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -58,13 +59,13 @@ fun HomeScreen(
             }
         }
 
-        is HomeUiState.Error -> {
-            val message = (uiState as HomeUiState.Error).message
+        is UiState.Error -> {
+            val message = (uiState as UiState.Error).message
             Text(text = message, color = MaterialTheme.colorScheme.error)
         }
 
-        is HomeUiState.Success -> {
-            val movies = (uiState as HomeUiState.Success).movies
+        is UiState.Success -> {
+            val movies = (uiState as UiState.Success<List<ResultsItem>>).data
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
