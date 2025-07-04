@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +31,7 @@ import com.example.moviecompose.data.repository.MovieRepository
 import com.example.moviecompose.data.response.Video
 import com.example.moviecompose.helper.ViewModelFactory
 import com.example.moviecompose.ui.UiState
+import com.example.moviecompose.ui.splash.SplashScreen
 
 private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
@@ -56,7 +56,7 @@ fun DetailScreen(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                SplashScreen()
             }
         }
 
@@ -92,7 +92,7 @@ fun DetailScreen(
 
                 Row {
                     Text(
-                        text = "Release: ${detail.release_date}",
+                        text = "Rilis: ${detail.release_date}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )

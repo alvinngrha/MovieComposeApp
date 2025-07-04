@@ -6,10 +6,13 @@ import com.example.moviecompose.data.response.MovieVideoResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("discover/movie")
-    suspend fun getMovies(): Response<MovieResponse>
+    suspend fun getMovies(
+        @Query("page") page: Int = 1
+    ): Response<MovieResponse>
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetail(

@@ -16,14 +16,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -48,6 +52,7 @@ fun HomeScreen(
         ViewModelFactory(repository).create(HomeViewModel::class.java)
     }
     val uiState by viewModel.homeUiState.collectAsState()
+    var searchQuery by remember { androidx.compose.runtime.mutableStateOf("") }
 
     when (uiState) {
         is UiState.Loading -> {
@@ -66,19 +71,51 @@ fun HomeScreen(
 
         is UiState.Success -> {
             val movies = (uiState as UiState.Success<List<ResultsItem>>).data
-            LazyColumn(
+            // Filter movies sesuai searchQuery
+            val filteredMovies = if (searchQuery.isBlank()) {
+                movies
+            } else {
+                movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
+            }
+            Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(16.dp)
             ) {
-                items(movies) { movie ->
-                    MovieCard(movie = movie, onClick = { onMovieClick(movie.id) })
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                ) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Search movies...") },
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        }
+                    )
+                }
+                LazyColumn(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(filteredMovies) { movie ->
+                        MovieCard(movie = movie, onClick = { onMovieClick(movie.id) })
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun MovieCard(movie: ResultsItem, onClick: () -> Unit) {
@@ -115,7 +152,7 @@ fun MovieCard(movie: ResultsItem, onClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Release: ${movie.releaseDate}",
+                    text = "Rilis: ${movie.releaseDate}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -130,4 +167,3 @@ fun MovieCard(movie: ResultsItem, onClick: () -> Unit) {
         }
     }
 }
-

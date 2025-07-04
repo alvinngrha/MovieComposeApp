@@ -25,13 +25,8 @@ class HomeViewModel(
         _homeUiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getMovies()
-                if (response.isSuccessful) {
-                    val movies = response.body()?.results ?: emptyList()
-                    _homeUiState.value = UiState.Success(movies)
-                } else {
-                    _homeUiState.value = UiState.Error("Error: ${response.code()}")
-                }
+                val movies = repository.getMovies(pages = 2)
+                _homeUiState.value = UiState.Success(movies)
             } catch (e: Exception) {
                 _homeUiState.value = UiState.Error(e.message ?: "Unknown error")
             }
