@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import com.example.moviecompose.data.repository.MovieRepository
 import com.example.moviecompose.ui.detail.DetailScreen
 import com.example.moviecompose.ui.home.HomeScreen
+import com.example.moviecompose.ui.splash.SplashScreen
 import com.example.moviecompose.ui.theme.MovieComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,9 +40,16 @@ fun MovieHome(modifier: Modifier) {
     val navController = androidx.navigation.compose.rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = "splash",
         modifier = modifier
     ) {
+        composable("splash") {
+            SplashScreen {
+                navController.navigate("home") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+        }
         composable("home") {
             HomeScreen(
                 modifier = Modifier.fillMaxSize(),

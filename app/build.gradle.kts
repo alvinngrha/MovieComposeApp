@@ -66,4 +66,10 @@ dependencies {
 
     //navigation
     implementation("androidx.navigation:navigation-compose:2.9.1")
+
+    //lottiefiles
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
+
+    // Accompanist System UI Controller (optional, for fullscreen splash)
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
 }

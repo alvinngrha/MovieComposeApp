@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +34,7 @@ import com.example.moviecompose.data.repository.MovieRepository
 import com.example.moviecompose.data.response.ResultsItem
 import com.example.moviecompose.helper.ViewModelFactory
 import com.example.moviecompose.ui.UiState
+import com.example.moviecompose.ui.splash.SplashScreen
 
 private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
@@ -55,7 +55,7 @@ fun HomeScreen(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                SplashScreen()
             }
         }
 
@@ -130,3 +130,4 @@ fun MovieCard(movie: ResultsItem, onClick: () -> Unit) {
         }
     }
 }
+
