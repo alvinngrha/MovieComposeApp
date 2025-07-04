@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,7 +53,7 @@ fun HomeScreen(
         ViewModelFactory(repository).create(HomeViewModel::class.java)
     }
     val uiState by viewModel.homeUiState.collectAsState()
-    var searchQuery by remember { androidx.compose.runtime.mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
 
     when (uiState) {
         is UiState.Loading -> {
@@ -92,7 +93,7 @@ fun HomeScreen(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("Search movies...") },
+                        placeholder = { Text("Mencari Film...") },
                         singleLine = true,
                         leadingIcon = {
                             Icon(
